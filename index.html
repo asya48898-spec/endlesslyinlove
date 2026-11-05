@@ -1,0 +1,985 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <script src="hagaily.js" defer></script>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instagram - My Soulmates</title>
+
+<style>
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: #fafafa;
+    color: #262626;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+button {
+    font-family: inherit;
+}
+
+/* HEADER */
+.navbar {
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #dbdbdb;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.logo {
+    font-family: cursive;
+    font-size: 29px;
+    font-weight: bold;
+}
+
+/* MAIN */
+.main {
+    max-width: 470px;
+    margin: 25px auto;
+    padding: 0 12px;
+}
+
+/* STORIES */
+.stories {
+    display: flex;
+    background: white;
+    padding: 16px 12px;
+    border: 1px solid #dbdbdb;
+    margin-bottom: 24px;
+}
+
+.story {
+    min-width: 65px;
+    text-align: center;
+    font-size: 12px;
+    cursor: pointer;
+}
+
+.story-ring {
+    width: 65px;
+    height: 65px;
+    border-radius: 50%;
+    padding: 3px;
+    margin: 0 auto 7px;
+    background: linear-gradient(
+        45deg,
+        #feda75,
+        #fa7e1e,
+        #d62976,
+        #962fbf,
+        #4f5bd5
+    );
+}
+
+.story-ring img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 50%;
+    border: 2px solid white;
+}
+
+/* POST */
+.post {
+    background: white;
+    border: 1px solid #dbdbdb;
+    margin-bottom: 25px;
+}
+
+.post-header {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    gap: 10px;
+}
+
+.profile-pic {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.username {
+    font-weight: 600;
+    font-size: 14px;
+}
+
+.location {
+    font-size: 12px;
+    margin-top: 3px;
+}
+
+.dots {
+    margin-left: auto;
+    font-size: 23px;
+}
+
+.post-photo {
+    width: 100%;
+    display: block;
+    cursor: pointer;
+    object-fit: cover;
+}
+
+.post-photo:active {
+    opacity: .95;
+}
+
+/* MULTI PHOTO CAROUSEL */
+.post-carousel {
+    position: relative;
+    width: 100%;
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+.post-carousel-track {
+    display: flex;
+    width: 100%;
+    transition: transform .35s ease;
+}
+
+.post-carousel-track img {
+    width: 100%;
+    height: auto;
+    flex: 0 0 100%;
+    display: block;
+    object-fit: cover;
+    cursor: pointer;
+}
+
+.photo-indicator {
+    display: flex;
+    justify-content: center;
+    gap: 6px;
+    padding: 10px 0 0;
+}
+
+.photo-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #c7c7c7;
+}
+
+.photo-dot.active {
+    background: #0095f6;
+}
+
+.photo-counter {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    background: rgba(0,0,0,.65);
+    color: white;
+    font-size: 12px;
+    padding: 5px 9px;
+    border-radius: 15px;
+}
+
+
+/* ACTIONS */
+.actions {
+    display: flex;
+    align-items: center;
+    padding: 12px;
+    gap: 16px;
+}
+
+.icon-button {
+    background: none;
+    border: none;
+    padding: 0;
+    color: #262626;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    transition: transform .15s;
+}
+
+.icon-button:active {
+    transform: scale(.85);
+}
+
+.icon-button svg {
+    width: 25px;
+    height: 25px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.icon-button.liked {
+    color: #ff3040;
+}
+
+.icon-button.liked svg {
+    fill: #ff3040;
+    stroke: #ff3040;
+}
+
+.icon-button.saved {
+    color: #262626;
+}
+
+.icon-button.saved svg {
+    fill: #262626;
+}
+
+.bookmark {
+    margin-left: auto;
+}
+
+/* CAPTION */
+.caption {
+    padding: 0 12px 15px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.likes {
+    font-weight: 600;
+    margin-bottom: 7px;
+}
+
+.caption p {
+    margin-top: 7px;
+}
+
+.date {
+    font-size: 10px;
+    color: #8e8e8e;
+    margin-top: 12px;
+}
+
+.comments-list {
+    margin-top: 10px;
+}
+
+.comment-item {
+    margin-top: 6px;
+    overflow-wrap: anywhere;
+}
+
+/* COMMENT */
+.comment-area {
+    display: none;
+    align-items: center;
+    padding: 10px 12px;
+    border-top: 1px solid #efefef;
+    gap: 10px;
+}
+
+.comment-area input {
+    flex: 1;
+    min-width: 0;
+    border: none;
+    outline: none;
+    font-size: 14px;
+    padding: 8px 0;
+}
+
+.comment-area button {
+    border: none;
+    background: none;
+    color: #0095f6;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+/* STORY VIEWER */
+#storyViewer {
+    display: none;
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: #080d11;
+    color: white;
+    overflow: hidden;
+}
+
+.story-screen {
+    position: relative;
+    width: 100%;
+    height: 100%;
+    max-width: 430px;
+    margin: auto;
+    background: #111;
+    overflow: hidden;
+}
+
+.story-photo {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.story-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        to bottom,
+        rgba(0,0,0,.45),
+        transparent 25%,
+        transparent 70%,
+        rgba(0,0,0,.35)
+    );
+    pointer-events: none;
+}
+
+/* PROGRESS */
+.story-progress {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    right: 12px;
+    display: flex;
+    gap: 4px;
+    z-index: 5;
+}
+
+.progress-segment {
+    height: 3px;
+    flex: 1;
+    background: rgba(255,255,255,.4);
+    border-radius: 10px;
+    overflow: hidden;
+}
+
+.progress-fill {
+    height: 100%;
+    width: 0%;
+    background: white;
+}
+
+/* STORY HEADER */
+.story-header {
+    position: absolute;
+    top: 32px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    z-index: 6;
+}
+
+.story-profile {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid white;
+}
+
+.story-user-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.story-username {
+    font-size: 15px;
+    font-weight: bold;
+}
+
+.story-time {
+    font-size: 12px;
+    color: #ddd;
+}
+
+.story-menu {
+    margin-left: auto;
+    font-size: 25px;
+}
+
+.story-close {
+    font-size: 27px;
+    cursor: pointer;
+    margin-left: 12px;
+    background: none;
+    color: white;
+    border: none;
+}
+
+/* STORY CAPTION */
+.story-caption {
+    position: absolute;
+    bottom: 125px;
+    left: 20px;
+    right: 20px;
+    text-align: center;
+    font-size: 20px;
+    font-weight: bold;
+    text-shadow: 0 2px 5px black;
+    z-index: 4;
+}
+
+/* NAVIGATION */
+.story-navigation {
+    position: absolute;
+    inset: 80px 0 100px;
+    display: flex;
+    z-index: 3;
+}
+
+.story-left,
+.story-right {
+    width: 50%;
+    height: 100%;
+    cursor: pointer;
+}
+
+/* STORY BOTTOM */
+.story-bottom {
+    position: absolute;
+    bottom: 25px;
+    left: 15px;
+    right: 15px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    z-index: 6;
+}
+
+.story-reply {
+    flex: 1;
+    min-width: 0;
+    height: 48px;
+    border: 1px solid rgba(255,255,255,.65);
+    border-radius: 30px;
+    background: transparent;
+    color: white;
+    padding: 0 18px;
+    font-size: 14px;
+    outline: none;
+}
+
+.story-reply::placeholder {
+    color: white;
+}
+
+.story-action {
+    font-size: 28px;
+    color: white;
+    cursor: pointer;
+    background: none;
+    border: none;
+}
+
+.story-action.active {
+    color: #ff3040;
+}
+
+/* LOVE PAGE */
+#lovePage {
+    display: none;
+    min-height: 100vh;
+    text-align: center;
+    padding: 45px 20px;
+    background: linear-gradient(
+        135deg,
+        #ffffff,
+        #f4f5f0,
+        #e8eee5
+    );
+    animation: bloom .8s ease;
+    overflow: hidden;
+    position: relative;
+}
+
+@keyframes bloom {
+    from {
+        opacity: 0;
+        transform: scale(.96);
+    }
+    to {
+        opacity: 1;
+        transform: scale(1);
+    }
+}
+
+#lovePage h1 {
+    font-size: 36px;
+    margin: 30px 0;
+    color: #303b32;
+    font-weight: 600;
+}
+
+.message {
+    font-size: 18px;
+    line-height: 1.8;
+    color: #465449;
+    position: relative;
+    z-index: 2;
+    max-width: 600px;
+    margin: auto;
+}
+
+.flower-garden {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 22px;
+    max-width: 700px;
+    margin: 40px auto;
+    position: relative;
+    z-index: 2;
+}
+
+.flower {
+    font-size: 45px;
+    animation: flowerMove 3s ease-in-out infinite;
+}
+
+.flower:nth-child(even) {
+    animation-delay: .5s;
+}
+
+@keyframes flowerMove {
+    0%, 100% {
+        transform: translateY(0) rotate(-8deg);
+    }
+    50% {
+        transform: translateY(-18px) rotate(10deg);
+    }
+}
+
+/* FALLING PETALS */
+.petals {
+    position: absolute;
+    top: -40px;
+    font-size: 25px;
+    pointer-events: none;
+    animation: falling 6s linear infinite;
+    z-index: 1;
+}
+
+@keyframes falling {
+    0% {
+        transform: translateY(-40px) rotate(0deg);
+        opacity: 0;
+    }
+    20% {
+        opacity: 1;
+    }
+    100% {
+        transform: translateY(100vh) rotate(360deg);
+        opacity: 0;
+    }
+}
+
+/* BACK BUTTON */
+.back-button {
+    padding: 11px 24px;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    background: white;
+    color: #262626;
+    font-size: 14px;
+    cursor: pointer;
+    margin-top: 30px;
+    position: relative;
+    z-index: 3;
+}
+
+/* MUSIC */
+#musicButton {
+    position: fixed;
+    bottom: 18px;
+    right: 18px;
+    z-index: 100;
+    padding: 11px 17px;
+    background: white;
+    color: #262626;
+    border: 1px solid #dbdbdb;
+    border-radius: 8px;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 2px 8px #00000012;
+}
+
+/* TOAST */
+.toast {
+    position: fixed;
+    bottom: 75px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #262626;
+    color: white;
+    padding: 11px 18px;
+    border-radius: 20px;
+    font-size: 13px;
+    z-index: 10000;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity .3s;
+}
+
+.toast.show {
+    opacity: 1;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+    .main {
+        margin: 15px auto;
+    }
+
+    #lovePage h1 {
+        font-size: 30px;
+    }
+
+    .message {
+        font-size: 16px;
+    }
+
+    .flower {
+        font-size: 36px;
+    }
+
+    .story-screen {
+        max-width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- INSTAGRAM HEADER -->
+<div class="navbar" id="navbar">
+    <div class="logo">Instagram</div>
+</div>
+
+<!-- HOME PAGE -->
+<div id="homePage">
+    <div class="main">
+
+        <!-- STORY -->
+        <div class="stories">
+            <div class="story" onclick="openStory(0)">
+                <div class="story-ring">
+                    <img src="keonho.jpg" alt="My love">
+                </div>
+                Me
+            </div>
+        </div>
+
+        <!-- POST -->
+        <div class="post">
+
+            <div class="post-header">
+                <img class="profile-pic"
+                     src="keonho.jpg"
+                     alt="Profile picture">
+
+                <div>
+                    <div class="username">dencaslo</div>
+                    <div class="location">City of Love, Paris.</div>
+                </div>
+
+                <div class="dots">···</div>
+            </div>
+
+            
+<div class="post-carousel" id="postCarousel">
+
+    <div class="post-carousel-track" id="postTrack">
+
+        <img
+            src="seonghyeon.jpg"
+            alt="My favorite person"
+            onclick="showLove()"
+        >
+
+        <img
+            src="us.jpg"
+            alt="Our favorite moment"
+            onclick="showLove()"
+        >
+
+    </div>
+
+    <div class="photo-counter" id="photoCounter">
+        1/2
+    </div>
+
+</div>
+
+<div class="photo-indicator">
+    <span class="photo-dot active"></span>
+    <span class="photo-dot"></span>
+</div>
+
+            <!-- ACTIONS -->
+            <div class="actions">
+
+                <button class="icon-button"
+                        onclick="likePost(this)"
+                        aria-label="Like"
+                        aria-pressed="false">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8z"/>
+                    </svg>
+                </button>
+
+                <button class="icon-button"
+                        onclick="commentPost()"
+                        aria-label="Comment">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M21 11.5a8.4 8.4 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.4 8.4 0 0 1-3.8-.9L3 21l1.9-5.7a8.4 8.4 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.4 8.4 0 0 1 3.8-.9h.5a8.5 8.5 0 0 1 8 8v.5z"/>
+                    </svg>
+                </button>
+
+                <button class="icon-button"
+                        onclick="sharePost()"
+                        aria-label="Share">
+                    <svg viewBox="0 0 24 24">
+                        <line x1="22" y1="2" x2="11" y2="13"/>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+                    </svg>
+                </button>
+
+                <button class="icon-button bookmark"
+                        onclick="savePost(this)"
+                        aria-label="Save"
+                        aria-pressed="false">
+                    <svg viewBox="0 0 24 24">
+                        <path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/>
+                    </svg>
+                </button>
+
+            </div>
+
+            <!-- CAPTION -->
+            <div class="caption">
+
+                <div class="likes" id="likeCount">
+                    1,024 likes
+                </div>
+
+                <p>
+                    <b>dencaslo</b>
+                    Time keeps passing, but my heart keeps finding 
+                    its way back to you
+                </p>
+
+                <p>
+                    You're the kind of home I never knew I was searching for,
+                    A home that isn't made of walls or ceilings, 
+                    but of gentle smiles, warm embraces, and a heart 
+                    that makes even the simplest moments feel like magic.
+                    Somehow, in a world that can be so unkind, 
+                    you became my favorite place to rest. 
+                    Your presence feels like a quiet afternoon after
+                    a long day, like sunlight slipping through the curtains,
+                    reminding me that there is still so much beauty in this world.
+                </p>
+
+                <p>
+                    And if life ever becomes too heavy on your shoulders,
+                    I hope you remember that you don't have to carry 
+                    everything alone. When the world forgets to be gentle with you,
+                    let me be the softness you come home to. 
+                    I'll be here, cheering for you, holding your hand 
+                    through the uncertain days, and loving every little part of you,
+                     even the ones you struggle to love yourself.
+                </p>
+                <p>
+                    Because if home is where the heart feels safe, then, 
+                    my sweetheart, my heart has found its home in you.
+                    I love you, Han Graz. More than words could ever hold, 
+                    and perhaps even more than time could ever tell. :]
+                </p>
+
+                <div id="commentsList" class="comments-list"></div>
+
+                <div class="date">
+                    NOVEMBER 2 · SEE MORE
+                </div>
+
+            </div>
+
+            <!-- COMMENT INPUT -->
+            <div class="comment-area" id="commentArea">
+                <input
+                    type="text"
+                    id="commentInput"
+                    placeholder="Add a comment..."
+                    maxlength="300"
+                >
+                <button onclick="sendComment()">Post</button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<!-- STORY VIEWER -->
+<div id="storyViewer">
+
+    <div class="story-screen">
+
+        <img id="storyImage"
+             class="story-photo"
+             src="keonho.jpg"
+             alt="Story photo">
+
+        <div class="story-overlay"></div>
+
+        <div class="story-progress" id="storyProgress"></div>
+
+        <!-- HEADER -->
+        <div class="story-header">
+
+            <img src="keonho.jpg"
+                 class="story-profile"
+                 alt="Profile">
+
+            <div class="story-user-info">
+                <span class="story-username">dencaslo</span>
+                <span class="story-time">2h</span>
+            </div>
+
+            <span class="story-menu">···</span>
+
+            <button class="story-close"
+                    onclick="closeStory()"
+                    aria-label="Close story">×</button>
+
+        </div>
+
+        <div class="story-caption" id="storyCaption"></div>
+
+        <!-- NAVIGATION -->
+        <div class="story-navigation">
+            <div class="story-left"
+                 onclick="previousStory()"></div>
+
+            <div class="story-right"
+                 onclick="nextStory()"></div>
+        </div>
+
+        <!-- BOTTOM -->
+        <div class="story-bottom">
+
+            <input
+                class="story-reply"
+                type="text"
+                placeholder="Send message..."
+                id="storyReply"
+                maxlength="300"
+            >
+
+            <button class="story-action"
+                    id="storyHeart"
+                    onclick="likeStory()"
+                    aria-label="Like story">♡</button>
+
+            <button class="story-action"
+                    onclick="replyStory()"
+                    aria-label="Reply">○</button>
+
+            <button class="story-action"
+                    onclick="shareStory()"
+                    aria-label="Share">➤</button>
+
+        </div>
+
+    </div>
+</div>
+
+
+</div>
+
+<!-- MUSIC -->
+<audio id="bgMusic" loop preload="none">
+    <source src="nothingbj.mp3" type="audio/mpeg">
+</audio>
+
+<button id="musicButton" onclick="toggleMusic()">
+    ♫ Play Music
+</button>
+
+<div class="toast" id="toast"></div>
+
+<script>
+
+/* =========================
+   STORY DATA
+========================= */
+
+const stories = [
+    {
+        image: "story1.jpg",
+    
+    },
+    {
+        image: "story2.jpg",
+
+    },
+    {
+        image: "story3.jpg",
+
+    },
+    {
+        image: "story4.jpg",
+    
+    }
+];
+
+let currentStory = 0;
+let storyTimer = null;
+let storyStartTime = 0;
+let remainingTime = 7000;
+let isPaused = false;
+let isStoryOpen = false;
+let storyLiked = false;
+
+const STORY_DURATION = 7000;
+
+const storyViewer = document.getElementById("storyViewer");
+const storyImage = document.getElementById("storyImage");
+const storyCaption = document.getElementById("storyCaption");
+const storyProgress = document.getElementById("storyProgress");
+
+const music = document.getElementById("bgMusic");
+const musicButton = document.getElementById("musicButton");
+
+/* =========================
+   TOAST MESSAGE
+========================= */
+
+let toastTimer;
+
+function showToast(message) {
+    const toast = document.getElementById("toast");
+
+    toast.textContent = message;
+    toast.classList.add("show");
+
+    clearTimeout(toastTimer);
